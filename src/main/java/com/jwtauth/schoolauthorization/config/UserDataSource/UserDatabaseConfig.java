@@ -17,45 +17,45 @@ import javax.sql.DataSource;
 
 @MapperScan(
         value = "com.jwtauth.schoolauthorization",
-        annotationClass = SchoolDatabaseConnMapper.class,
-        sqlSessionFactoryRef = "SchoolDatabaseSessionFactory")
+        annotationClass = UserDatabaseConnMapper.class,
+        sqlSessionFactoryRef = "UserDatabaseSessionFactory")
 @Configuration
-public class SchoolDatabaseConfig {
-    @Bean(name = "SchoolDataSource")
+public class UserDatabaseConfig {
+    @Bean(name = "UserDataSource")
     @Primary
-    @ConfigurationProperties(prefix="spring.school.datasource")
-    public DataSource schoolDatabaseDataSource(){
+    @ConfigurationProperties(prefix="spring.User.datasource")
+    public DataSource userDatabaseDataSource(){
      return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
-                .url("jdbc:postgresql://localhost:5432/school")
+                .url("jdbc:postgresql://localhost:5432/jwt")
                 .username("postgres")
                 .password("root")
                 .build();
     }
 
-    @Bean(name = "SchoolDatabaseSessionFactory")
-    public SqlSessionFactory schoolDatabaseSessionFactory(
-            @Qualifier("SchoolDataSource") DataSource schoolDataSource) throws Exception{
+    @Bean(name = "UserDatabaseSessionFactory")
+    public SqlSessionFactory userDatabaseSessionFactory(
+            @Qualifier("UserDataSource") DataSource userDataSource) throws Exception{
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setDataSource(schoolDataSource);
+        sqlSessionFactoryBean.setDataSource(userDataSource);
         sqlSessionFactoryBean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources("mapper/school/*.xml"));
+                new PathMatchingResourcePatternResolver().getResources("mapper/user/*.xml"));
         sqlSessionFactoryBean.setTypeAliasesPackage("com.jwtauth.schoolauthorization.Entity");
         return sqlSessionFactoryBean.getObject();
     }
 
-    @Bean(name = "SchoolDatabaseSessionTemplate")
-    public SqlSessionTemplate schoolDatabaseSessionTemplate(
-            @Qualifier("SchoolDatabaseSessionFactory")
-            SqlSessionFactory schoolSessionTemplate){
-        return new SqlSessionTemplate(schoolSessionTemplate);
+    @Bean(name = "UserDatabaseSessionTemplate")
+    public SqlSessionTemplate userDatabaseSessionTemplate(
+            @Qualifier("UserDatabaseSessionFactory")
+            SqlSessionFactory userSessionTemplate){
+        return new SqlSessionTemplate(userSessionTemplate);
     }
 
-    @Bean(name = "SchoolDatabaseTransactionManager")
-    public DataSourceTransactionManager schoolDatabaseTransactionManager(
-            @Qualifier("SchoolDataSource")
-            DataSource schoolDataSource) {
+    @Bean(name = "UserDatabaseTransactionManager")
+    public DataSourceTransactionManager userDatabaseTransactionManager(
+            @Qualifier("UserDataSource")
+            DataSource userDataSource) {
 
-        return new DataSourceTransactionManager(schoolDataSource);
+        return new DataSourceTransactionManager(userDataSource);
     }
 }

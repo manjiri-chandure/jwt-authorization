@@ -9,6 +9,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface SchoolDatabaseConnMapper{
+public @interface UserDatabaseConnMapper {
     String value() default "";
 }
