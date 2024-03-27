@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 public class UserDatabaseConfig {
     @Bean(name = "UserDataSource")
     @Primary
-    @ConfigurationProperties(prefix="spring.User.datasource")
+    @ConfigurationProperties(prefix="spring.user.datasource")
     public DataSource userDatabaseDataSource(){
      return DataSourceBuilder.create()
                 .driverClassName("org.postgresql.Driver")
