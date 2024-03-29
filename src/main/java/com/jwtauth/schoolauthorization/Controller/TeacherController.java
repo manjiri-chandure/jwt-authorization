@@ -9,18 +9,19 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/teachers")
+@PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_OFFICEADMIN')")
 public class TeacherController {
 
     @Autowired
     TeacherService teacherService;
     @GetMapping()
-    @RolesAllowed("ROLE_TEACHER")
     public ResponseEntity<List<TeacherDtoForList>> getTeachers(@RequestParam(name = "minAge", required = false) Integer minAge ,
                                                                @RequestParam(name = "maxAge", required = false) Integer maxAge,
                                                                @RequestParam(name = "gender", required = false) String gender,
@@ -31,7 +32,6 @@ public class TeacherController {
     }
 
     @GetMapping("/{id}/subjects")
-    @RolesAllowed("ROLE_TEACHER")
     public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Integer id) throws ResourceNotFoundException {
         TeacherDto teacherDto = this.teacherService.getTeacherById(id);
         return new ResponseEntity<>(teacherDto, HttpStatus.OK);
@@ -39,7 +39,6 @@ public class TeacherController {
 
 
     @PostMapping()
-    @RolesAllowed("ROLE_TEACHER")
     public ResponseEntity<TeacherDto> postTeacher(@Valid @RequestBody TeacherCreationDto teacherCreationDto){
         TeacherDto teacherDto = this.teacherService.insertTeacher(teacherCreationDto);
         return new ResponseEntity<>(teacherDto, HttpStatus.CREATED);
