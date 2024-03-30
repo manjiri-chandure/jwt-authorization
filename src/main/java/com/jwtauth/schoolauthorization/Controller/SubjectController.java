@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/subjects")
-@PreAuthorize("hasAnyRole('ROLE_STUDENT','ROLE_TEACHER', 'ROLE_OFFICEADMIN')")
+@RolesAllowed({"STUDENT", "TEACHER", "OFFICEADMIN"})
 public class SubjectController {
 
     @Autowired

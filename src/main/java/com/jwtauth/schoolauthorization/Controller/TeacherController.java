@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/teachers")
-@PreAuthorize("hasAnyRole('ROLE_TEACHER', 'ROLE_OFFICEADMIN')")
+@RolesAllowed({"TEACHER", "OFFICEADMIN"})
 public class TeacherController {
 
     @Autowired
