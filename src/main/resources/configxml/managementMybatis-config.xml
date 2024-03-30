@@ -1,0 +1,18 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <typeAliases>
+        <typeAlias alias = "HostelEntity" type = "com.jwtauth.schoolauthorization.ManagementEntity.HostelEntity"/>
+        <typeAlias alias = "MessEntity" type = "com.jwtauth.schoolauthorization.ManagementEntity.MessEntity"/>
+        <typeAlias alias = "MessOwnerEntity" type = "com.jwtauth.schoolauthorization.ManagementEntity.MessOwnerEntity"/>
+    </typeAliases>
+
+    <mappers>
+        <mapper resource = "mapper/management/HostelMapper.xml"/>
+        <mapper resource = "mapper/management/MessMapper.xml"/>
+        <mapper resource = "mapper/management/MessOwnerMapper.xml"/>
+    </mappers>
+
+</configuration>

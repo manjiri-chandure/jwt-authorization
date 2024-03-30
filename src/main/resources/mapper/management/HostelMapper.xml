@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jwtauth.schoolauthorization.ManagementRepository.HostelRepository" >
+    <resultMap id="HostelResultMap" type="com.jwtauth.schoolauthorization.ManagementEntity.HostelEntity" >
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="hostel_type" property="hostelType"/>
+        <result column="location" property="location"/>
+    </resultMap>
+
+    <select id="findAllHostels"
+            resultMap="HostelResultMap" resultType="com.jwtauth.schoolauthorization.ManagementEntity.HostelEntity">
+        SELECT id, name, hostel_type, location
+        FROM hostel
+    </select>
+
+    <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.ManagementEntity.HostelEntity" keyColumn="id">
+        insert into hostel (name, hostel_type, location)
+        values (#{name},#{hostelType},#{location})
+    </insert>
+</mapper>
