@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping
+@RolesAllowed({"HOSTEL_ADMIN"})
 public class HostelController{
 
     @Autowired

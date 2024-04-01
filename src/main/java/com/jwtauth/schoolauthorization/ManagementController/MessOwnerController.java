@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/mess_owner")
+@RolesAllowed("MESS_OWNER")
 public class MessOwnerController {
     @Autowired
     MessOwnerService messOwnerService;

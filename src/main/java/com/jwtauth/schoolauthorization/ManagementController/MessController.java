@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping
+@RolesAllowed({"STUDENT", "MESS_OWNER"})
 public class MessController {
 
     @Autowired
