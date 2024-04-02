@@ -4,11 +4,11 @@
 <configuration>
 
     <typeAliases>
-        <typeAlias alias = "UserData" type = "com.jwtauth.schoolauthorization.UserEntity.UserData"/>
+        <typeAlias alias="UserData" type="com.jwtauth.schoolauthorization.user.entity.UserData"/>
     </typeAliases>
 
     <mappers>
-        <mapper resource = "mapper/user/UserMapper.xml"/>
+        <mapper resource="mapper/user/UserMapper.xml"/>
     </mappers>
 
 </configuration>
