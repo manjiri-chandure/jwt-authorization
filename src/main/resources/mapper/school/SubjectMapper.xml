@@ -13,6 +13,9 @@
         subject
     </select>
 
+    <select id="findSubjectByName" parameterType="java.lang.String">
+        select id from subject where name = #{name}
+    </select>
 
     <insert id="addSubject" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.entity.SubjectEntity" keyColumn="id">
         insert into subject (name, teacher_id)
