@@ -31,10 +31,12 @@ public class MessOwnerController {
     return ResponseEntity.ok(messOwners);
   }
 
-  @PostMapping("")
-  public ResponseEntity<MessOwnerDto> createMessOwner(@Valid @RequestBody MessOwnerCreationDto messOwnerCreationDto)
-    throws ResourceNotFoundException {
-    MessOwnerDto messOwnerDto = this.messOwnerService.createMessOwner(messOwnerCreationDto);
-    return new ResponseEntity<>(messOwnerDto, HttpStatus.CREATED);
-  }
+
+    @PostMapping("")
+    public ResponseEntity<MessOwnerDto> createMessOwner(@Valid @RequestBody MessOwnerCreationDto messOwnerCreationDto)
+       {
+        MessOwnerDto messOwnerDto = this.messOwnerService.createMessOwner(messOwnerCreationDto);
+        return new ResponseEntity<>(messOwnerDto, HttpStatus.CREATED);
+       }
+
 }

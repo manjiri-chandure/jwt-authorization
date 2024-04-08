@@ -38,7 +38,7 @@ public class TeacherController {
   }
 
   @GetMapping("/{id}/subjects")
-  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Integer id) throws ResourceNotFoundException {
+  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Integer id){
     TeacherDto teacherDto = this.teacherService.getTeacherById(id);
     return new ResponseEntity<>(teacherDto, HttpStatus.OK);
   }

@@ -20,23 +20,26 @@ public class TeacherService {
     @Autowired
     TeacherMapper teacherMapper;
 
-    public List<TeacherDtoForList> getTeachers(Integer minAge, Integer maxAge, String gender, String subject){
-        List<TeacherEntity> teacherEntityList = this.teacherRepository.findAllTeachers(minAge, maxAge, gender, subject);
-        return this.teacherMapper.toDtoList(teacherEntityList);
-    }
 
-    public TeacherDto getTeacherById(Integer id) throws ResourceNotFoundException {
-        TeacherEntity teacherEntity = teacherRepository.findTeacherById(id);
-        if(teacherEntity == null){
-            throw new ResourceNotFoundException("teacher with id "+id+" not found");
+        public List<TeacherDtoForList> getTeachers (Integer minAge, Integer maxAge, String gender, String subject){
+            List<TeacherEntity> teacherEntityList = this.teacherRepository.findAllTeachers(minAge, maxAge, gender, subject);
+            return this.teacherMapper.toDtoList(teacherEntityList);
         }
-        return this.teacherMapper.toDto(teacherEntity);
+
+        public TeacherDto getTeacherById (Integer id){
+            TeacherEntity teacherEntity = teacherRepository.findTeacherById(id);
+            if (teacherEntity == null) {
+                throw new ResourceNotFoundException("teacher with id " + id + " not found");
+            }
+            return this.teacherMapper.toDto(teacherEntity);
+        }
+
+
+        public TeacherDto insertTeacher (TeacherCreationDto teacherCreationDto){
+            TeacherEntity teacherEntity = this.teacherMapper.toEntity(teacherCreationDto);
+            this.teacherRepository.addTeacher(teacherEntity);
+            return this.teacherMapper.toDto(teacherEntity);
+        }
+
     }
 
-    public TeacherDto insertTeacher(TeacherCreationDto teacherCreationDto){
-           TeacherEntity teacherEntity = this.teacherMapper.toEntity(teacherCreationDto);
-           this.teacherRepository.addTeacher(teacherEntity);
-           return this.teacherMapper.toDto(teacherEntity);
-   }
-
-}

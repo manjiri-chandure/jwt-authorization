@@ -32,21 +32,28 @@ public class StudentController {
 
   @GetMapping("/{id}/subjects")
   public ResponseEntity<StudentDtoForSubject> getStudentWithSubjectList(@PathVariable(name = "id") Integer id)
-    throws ResourceNotFoundException, ResourceNotFoundException {
+     {
     StudentDtoForSubject studentDtoForSubject = this.studentService.getStudentById(id);
     return new ResponseEntity<>(studentDtoForSubject, HttpStatus.OK);
   }
 
   @PostMapping()
-  public ResponseEntity<StudentDto> postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
+  public ResponseEntity<String> postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
     StudentDto studentDto = this.studentService.postStudent(studentCreationDto);
-    return new ResponseEntity<>(studentDto, HttpStatus.CREATED);
+    String ans = "";
+    if(studentDto != null){
+        ans += "Student created with Id "+studentDto.getId();
+    }
+    else{
+      ans += "Student Not Created";
+    }
+    return new ResponseEntity<>(ans, HttpStatus.CREATED);
   }
 
   @PostMapping("/{id}/subjects")
   public ResponseEntity<StudentDto> assignSubjectsToStudent(@PathVariable(name = "id") Integer id,
                                                             @RequestBody List<SubjectDto> subjectDtoList)
-    throws ResourceNotFoundException {
+    {
     StudentDto studentDto = this.studentService.assignSubjectsToStudent(id, subjectDtoList);
     return new ResponseEntity<>(studentDto, HttpStatus.OK);
   }

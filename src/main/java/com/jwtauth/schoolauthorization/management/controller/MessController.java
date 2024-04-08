@@ -39,10 +39,10 @@ public class MessController {
     return new ResponseEntity<>(messDto, HttpStatus.CREATED);
   }
 
+
   @GetMapping("/mess/{mess_id}/owners")
-  public ResponseEntity<MessOwnersDto> getAllOwners(@PathVariable("mess_id") Integer mess_id) throws ResourceNotFoundException {
+  public ResponseEntity<MessOwnersDto> getAllOwners(@PathVariable("mess_id") Integer mess_id){
     MessOwnersDto messOwnersDto = this.messService.getAllOwners(mess_id);
     return ResponseEntity.ok(messOwnersDto);
   }
-
 }
