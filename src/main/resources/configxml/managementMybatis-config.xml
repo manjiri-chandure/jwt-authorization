@@ -4,9 +4,9 @@
 <configuration>
 
     <typeAliases>
-        <typeAlias alias = "HostelEntity" type = "com.jwtauth.schoolauthorization.ManagementEntity.HostelEntity"/>
-        <typeAlias alias = "MessEntity" type = "com.jwtauth.schoolauthorization.ManagementEntity.MessEntity"/>
-        <typeAlias alias = "MessOwnerEntity" type = "com.jwtauth.schoolauthorization.ManagementEntity.MessOwnerEntity"/>
+        <typeAlias alias = "HostelEntity" type = "com.jwtauth.schoolauthorization.management.entity.HostelEntity"/>
+        <typeAlias alias = "MessEntity" type = "com.jwtauth.schoolauthorization.management.entity.MessEntity"/>
+        <typeAlias alias = "MessOwnerEntity" type = "com.jwtauth.schoolauthorization.management.entity.MessOwnerEntity"/>
     </typeAliases>
 
     <mappers>

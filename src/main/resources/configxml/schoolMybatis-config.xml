@@ -4,9 +4,9 @@
 <configuration>
 
     <typeAliases>
-        <typeAlias alias = "StudentEntity" type = "com.jwtauth.schoolauthorization.Entity.StudentEntity"/>
-        <typeAlias alias = "SubjectEntity" type = "com.jwtauth.schoolauthorization.Entity.SubjectEntity"/>
-        <typeAlias alias = "TeacherEntity" type = "com.jwtauth.schoolauthorization.Entity.TeacherEntity"/>
+        <typeAlias alias = "StudentEntity" type = "com.jwtauth.schoolauthorization.entity.StudentEntity"/>
+        <typeAlias alias = "SubjectEntity" type = "com.jwtauth.schoolauthorization.entity.SubjectEntity"/>
+        <typeAlias alias = "TeacherEntity" type = "com.jwtauth.schoolauthorization.entity.TeacherEntity"/>
     </typeAliases>
 
     <mappers>

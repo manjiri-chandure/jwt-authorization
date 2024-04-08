@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jwtauth.schoolauthorization.Repository.TeacherRepository" >
+<mapper namespace="com.jwtauth.schoolauthorization.repository.TeacherRepository" >
 
-    <resultMap id="TeacherResultMap" type="com.jwtauth.schoolauthorization.Entity.TeacherEntity" >
+    <resultMap id="TeacherResultMap" type="com.jwtauth.schoolauthorization.entity.TeacherEntity" >
         <id column="id" property="id"/>
         <result column="first_name" property="firstName"/>
         <result column="last_name" property="lastName"/>
@@ -11,13 +11,13 @@
         <result column="age" property="age"/>
         <result column="phone_number" property="phoneNumber"/>
         <result column="email" property="email"/>
-        <collection property="subjectEntities" ofType="com.jwtauth.schoolauthorization.Entity.SubjectEntity"
+        <collection property="subjectEntities" ofType="com.jwtauth.schoolauthorization.entity.SubjectEntity"
                     column="id" select="selectSubjectByTeacherId"/>
     </resultMap>
 
 
     <select id="findAllTeachers" resultMap="TeacherResultMap"
-            resultType="com.jwtauth.schoolauthorization.Entity.TeacherEntity">
+            resultType="com.jwtauth.schoolauthorization.entity.TeacherEntity">
         select id,first_name, last_name, gender, age, phone_number, email
         from teacher
         <where>
@@ -37,18 +37,18 @@
     </select>
 
     <select id="findTeacherById" resultMap="TeacherResultMap" parameterType="java.lang.Integer"
-            resultType="com.jwtauth.schoolauthorization.Entity.TeacherEntity">
+            resultType="com.jwtauth.schoolauthorization.entity.TeacherEntity">
         select id,first_name, last_name, gender, age, phone_number, email
         from teacher where id = #{id}
     </select>
     
     <select id="selectSubjectByTeacherId" parameterType="java.lang.Integer"
-            resultType="com.jwtauth.schoolauthorization.Entity.SubjectEntity"
-            resultMap="com.jwtauth.schoolauthorization.Repository.SubjectRepository.SubjectResultMap">
+            resultType="com.jwtauth.schoolauthorization.entity.SubjectEntity"
+            resultMap="com.jwtauth.schoolauthorization.repository.SubjectRepository.SubjectResultMap">
         select subject.id, subject.name , subject.teacher_id from subject where subject.teacher_id = #{id}
     </select>
 
-    <insert id="addTeacher" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.Entity.TeacherEntity" keyColumn="id">
+    <insert id="addTeacher" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.entity.TeacherEntity" keyColumn="id">
         insert into teacher (first_name, last_name, gender, age, phone_number, email)
         values (#{firstName},#{lastName},#{gender},#{age}, #{phoneNumber}, #{email})
    </insert>

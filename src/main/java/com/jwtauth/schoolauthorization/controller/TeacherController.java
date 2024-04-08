@@ -1,9 +1,9 @@
 package com.jwtauth.schoolauthorization.controller;
-import com.jwtauth.schoolauthorization.Dto.TeacherCreationDto;
-import com.jwtauth.schoolauthorization.Dto.TeacherDto;
-import com.jwtauth.schoolauthorization.Dto.TeacherDtoForList;
-import com.jwtauth.schoolauthorization.Exception.ResourceNotFoundException;
-import com.jwtauth.schoolauthorization.Service.TeacherService;
+import com.jwtauth.schoolauthorization.dto.TeacherCreationDto;
+import com.jwtauth.schoolauthorization.dto.TeacherDto;
+import com.jwtauth.schoolauthorization.dto.TeacherDtoForList;
+import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
+import com.jwtauth.schoolauthorization.service.TeacherService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

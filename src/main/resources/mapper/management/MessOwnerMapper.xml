@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jwtauth.schoolauthorization.ManagementRepository.MessOwnerRepository" >
-    <resultMap id="MessOwnerResultMap" type="com.jwtauth.schoolauthorization.ManagementEntity.MessOwnerEntity" >
+<mapper namespace="com.jwtauth.schoolauthorization.management.repository.MessOwnerRepository" >
+    <resultMap id="MessOwnerResultMap" type="com.jwtauth.schoolauthorization.management.entity.MessOwnerEntity" >
         <id column="id" property="id"/>
         <result column="first_name" property="firstName"/>
         <result column="last_name" property="lastName"/>
@@ -13,18 +13,18 @@
     </resultMap>
 
     <select id="findAllMessOwners"
-            resultMap="MessOwnerResultMap" resultType="com.jwtauth.schoolauthorization.ManagementEntity.MessOwnerEntity">
+            resultMap="MessOwnerResultMap" resultType="com.jwtauth.schoolauthorization.management.entity.MessOwnerEntity">
         SELECT id, first_name, last_name, age, gender, contact_number, mess_id
         FROM mess_owner
     </select>
 
     <select id="findAllMessOwnersByMessId"
-            resultMap="MessOwnerResultMap" parameterType="java.lang.Integer" resultType="com.jwtauth.schoolauthorization.ManagementEntity.MessOwnerEntity">
+            resultMap="MessOwnerResultMap" parameterType="java.lang.Integer" resultType="com.jwtauth.schoolauthorization.management.entity.MessOwnerEntity">
         SELECT id, first_name, last_name, age, gender, contact_number, mess_id
         FROM mess_owner WHERE mess_id = #{messId}
     </select>
 
-    <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.ManagementEntity.MessOwnerEntity" keyColumn="id">
+    <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.management.entity.MessOwnerEntity" keyColumn="id">
         insert into mess_owner(first_name, last_name, age, gender, contact_number, mess_id)
         values (#{firstName},#{lastName},#{age},#{gender},#{contactNumber},#{messId})
     </insert>

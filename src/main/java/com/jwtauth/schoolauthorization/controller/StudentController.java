@@ -1,9 +1,7 @@
 package com.jwtauth.schoolauthorization.controller;
-
-
-import com.jwtauth.schoolauthorization.Dto.*;
-import com.jwtauth.schoolauthorization.Exception.ResourceNotFoundException;
-import com.jwtauth.schoolauthorization.Service.StudentService;
+import com.jwtauth.schoolauthorization.dto.*;
+import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
+import com.jwtauth.schoolauthorization.service.StudentService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +50,5 @@ public class StudentController {
     StudentDto studentDto = this.studentService.assignSubjectsToStudent(id, subjectDtoList);
     return new ResponseEntity<>(studentDto, HttpStatus.OK);
   }
+
 }

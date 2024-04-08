@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jwtauth.schoolauthorization.ManagementRepository.MessRepository" >
-    <resultMap id="MessResultMap" type="com.jwtauth.schoolauthorization.ManagementEntity.MessEntity" >
+<mapper namespace="com.jwtauth.schoolauthorization.management.repository.MessRepository" >
+    <resultMap id="MessResultMap" type="com.jwtauth.schoolauthorization.management.entity.MessEntity" >
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="contact_number" property="contactNumber"/>
@@ -11,18 +11,18 @@
     </resultMap>
 
     <select id="findAllMess"
-            resultMap="MessResultMap" resultType="com.jwtauth.schoolauthorization.ManagementEntity.MessEntity">
+            resultMap="MessResultMap" resultType="com.jwtauth.schoolauthorization.management.entity.MessEntity">
         SELECT id, name, contact_number, mess_type, location
         FROM mess
     </select>
 
     <select id="findMessByID"
-            resultMap="MessResultMap" parameterType="java.lang.Integer" resultType="com.jwtauth.schoolauthorization.ManagementEntity.MessEntity">
+            resultMap="MessResultMap" parameterType="java.lang.Integer" resultType="com.jwtauth.schoolauthorization.management.entity.MessEntity">
         SELECT id, name, contact_number, mess_type, location
         FROM mess WHERE id = #{messId}
     </select>
 
-    <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.ManagementEntity.MessEntity" keyColumn="id">
+    <insert id="add" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.management.entity.MessEntity" keyColumn="id">
         insert into mess (name, contact_number, mess_type, location)
         values (#{name},#{contactNumber},#{messType},#{location})
     </insert>
