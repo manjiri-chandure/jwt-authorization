@@ -3,11 +3,13 @@ import com.jwtauth.schoolauthorization.dto.*;
 import com.jwtauth.schoolauthorization.entity.StudentEntity;
 import com.jwtauth.schoolauthorization.entity.SubjectEntity;
 import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
+import com.jwtauth.schoolauthorization.exception.UnauthorizedException;
 import com.jwtauth.schoolauthorization.mapstruct.SubjectMapper;
 import com.jwtauth.schoolauthorization.mapstruct.StudentMapper;
 import com.jwtauth.schoolauthorization.repository.StudentRepository;
 import com.jwtauth.schoolauthorization.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -25,16 +27,22 @@ public class StudentService {
     @Autowired
     SubjectMapper subjectMapper;
 
+
     public List<StudentDtoForList> getAllStudent() {
         List<StudentEntity> studentEntityList = this.studentRepository.findAllStudents();
         return this.studentMapper.toDtoList(studentEntityList);
     }
 
-    public StudentDtoForSubject getStudentById(Integer id) {
-        StudentEntity studentEntity = this.studentRepository.findStudentById(id);
-        if (studentEntity == null) {
+
+  public StudentDtoForSubject getStudentById(Integer id , Jwt jwt){
+     StudentEntity studentEntity = this.studentRepository.findStudentById(id);
+     String string = jwt.getClaim("UserId").toString();
+     Integer sid =Integer.parseInt(string);
+    if(jwt.getClaim("Role").equals("ROLE_STUDENT") && !sid.equals(id))
+       throw new UnauthorizedException("This resource is not allowed");
+    if (studentEntity == null) {
             throw new ResourceNotFoundException("student with id " + id + " not found");
-        }
+    }
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 

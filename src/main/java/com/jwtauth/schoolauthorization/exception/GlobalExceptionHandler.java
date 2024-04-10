@@ -23,6 +23,12 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
   }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> resourceAlreadyExistsException(UnauthorizedException ux, WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), ux.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {

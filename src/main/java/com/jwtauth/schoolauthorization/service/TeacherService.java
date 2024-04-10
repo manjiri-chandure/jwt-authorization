@@ -4,9 +4,12 @@ import com.jwtauth.schoolauthorization.dto.TeacherDto;
 import com.jwtauth.schoolauthorization.dto.TeacherDtoForList;
 import com.jwtauth.schoolauthorization.entity.TeacherEntity;
 import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
+import com.jwtauth.schoolauthorization.exception.UnauthorizedException;
 import com.jwtauth.schoolauthorization.mapstruct.TeacherMapper;
 import com.jwtauth.schoolauthorization.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +29,15 @@ public class TeacherService {
             return this.teacherMapper.toDtoList(teacherEntityList);
         }
 
-        public TeacherDto getTeacherById (Integer id){
+        public TeacherDto getTeacherById (Integer id,  Jwt jwt){
+
+            String string = jwt.getClaim("UserId").toString();
+            Integer tid =Integer.parseInt(string);
+            if(jwt.getClaim("Role").equals("ROLE_TEACHER") && !tid.equals(id))
+                throw new UnauthorizedException("This resource is not allowed");
+
             TeacherEntity teacherEntity = teacherRepository.findTeacherById(id);
+
             if (teacherEntity == null) {
                 throw new ResourceNotFoundException("teacher with id " + id + " not found");
             }

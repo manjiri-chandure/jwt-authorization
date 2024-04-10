@@ -21,26 +21,26 @@ import java.util.List;
 
 @RestController
 @RequestMapping
-@RolesAllowed({"ROLE_STUDENT", "ROLE_MESS_OWNER"})
 public class MessController {
 
-  @Autowired
-  MessService messService;
+    @Autowired
+    MessService messService;
+    @GetMapping("/mess")
+    @RolesAllowed({"ROLE_STUDENT", "ROLE_MESS_OWNER"})
+    public ResponseEntity<List<MessDto>> getmess(){
+        List<MessDto> mess = this.messService.getAllMess();
+        return ResponseEntity.ok(mess);
+    }
 
-  @GetMapping("/mess")
-  public ResponseEntity<List<MessDto>> getmess() {
-    List<MessDto> mess = this.messService.getAllMess();
-    return ResponseEntity.ok(mess);
-  }
+    @PostMapping("/mess")
+    @RolesAllowed({"ROLE_MESS_OWNER"})
+    public ResponseEntity<MessDto> createMess(@Valid @RequestBody MessCreationDto messCreationDto){
+        MessDto messDto = this.messService.createMess(messCreationDto);
+        return new ResponseEntity<>(messDto, HttpStatus.CREATED);
+    }
 
-  @PostMapping("/mess")
-  public ResponseEntity<MessDto> createMess(@Valid @RequestBody MessCreationDto messCreationDto) {
-    MessDto messDto = this.messService.createMess(messCreationDto);
-    return new ResponseEntity<>(messDto, HttpStatus.CREATED);
-  }
-
-
-  @GetMapping("/mess/{mess_id}/owners")
+    @GetMapping("/mess/{mess_id}/owners")
+  @RolesAllowed({"MESS_OWNER"})
   public ResponseEntity<MessOwnersDto> getAllOwners(@PathVariable("mess_id") Integer mess_id){
     MessOwnersDto messOwnersDto = this.messService.getAllOwners(mess_id);
     return ResponseEntity.ok(messOwnersDto);

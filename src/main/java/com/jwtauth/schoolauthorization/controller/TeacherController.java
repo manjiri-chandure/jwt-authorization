@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +23,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/teachers")
-@RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
 public class TeacherController {
 
   @Autowired
   TeacherService teacherService;
 
   @GetMapping()
+  @RolesAllowed({"ROLE_STUDENT", "ROLE_TEACHER", "ROLE_OFFICEADMIN"})
   public ResponseEntity<List<TeacherDtoForList>> getTeachers(@RequestParam(name = "minAge", required = false) Integer minAge,
                                                              @RequestParam(name = "maxAge", required = false) Integer maxAge,
                                                              @RequestParam(name = "gender", required = false) String gender,
@@ -38,13 +40,16 @@ public class TeacherController {
   }
 
   @GetMapping("/{id}/subjects")
-  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Integer id){
-    TeacherDto teacherDto = this.teacherService.getTeacherById(id);
+  @RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal Jwt jwt){
+   //////////////////////////////////////////////////////////////////
+    TeacherDto teacherDto = this.teacherService.getTeacherById(id, jwt);
     return new ResponseEntity<>(teacherDto, HttpStatus.OK);
   }
 
 
   @PostMapping()
+  @RolesAllowed({"ROLE_OFFICEADMIN"})
   public ResponseEntity<TeacherDto> postTeacher(@Valid @RequestBody TeacherCreationDto teacherCreationDto) {
     TeacherDto teacherDto = this.teacherService.insertTeacher(teacherCreationDto);
     return new ResponseEntity<>(teacherDto, HttpStatus.CREATED);

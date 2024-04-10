@@ -17,21 +17,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping
-@RolesAllowed({"ROLE_HOSTEL_ADMIN"})
-public class HostelController {
+public class HostelController{
 
-  @Autowired
-  HostelService hostelService;
+    @Autowired
+    HostelService hostelService;
+    @GetMapping("/hostels")
+    @RolesAllowed({"ROLE_STUDENT","ROLE_HOSTEL_ADMIN" })
+    public ResponseEntity<List<HostelDto>> gethostels(){
+        List<HostelDto> hostels = this.hostelService.getAllHostels();
+        return ResponseEntity.ok(hostels);
+    }
 
-  @GetMapping("/hostels")
-  public ResponseEntity<List<HostelDto>> gethostels() {
-    List<HostelDto> hostels = this.hostelService.getAllHostels();
-    return ResponseEntity.ok(hostels);
-  }
-
-  @PostMapping("/hostels")
-  public ResponseEntity<HostelDto> createHostel(@Valid @RequestBody HostelCreationDto hostelCreationDto) {
-    HostelDto hostelDto = this.hostelService.createHostel(hostelCreationDto);
-    return new ResponseEntity<>(hostelDto, HttpStatus.CREATED);
-  }
+    @PostMapping("/hostels")
+    @RolesAllowed({"HOSTEL_ADMIN"})
+    public ResponseEntity<HostelDto> createHostel(@Valid @RequestBody HostelCreationDto hostelCreationDto){
+        HostelDto hostelDto = this.hostelService.createHostel(hostelCreationDto);
+        return new ResponseEntity<>(hostelDto, HttpStatus.CREATED);
+    }
 }

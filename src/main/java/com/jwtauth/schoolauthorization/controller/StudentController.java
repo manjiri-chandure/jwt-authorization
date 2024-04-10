@@ -7,6 +7,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,26 +22,28 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/students")
-@RolesAllowed("ROLE_STUDENT")
 public class StudentController {
 
   @Autowired
   StudentService studentService;
 
   @GetMapping()
+  @RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
   public ResponseEntity<List<StudentDtoForList>> getStudents() {
     List<StudentDtoForList> studentDtoList = this.studentService.getAllStudent();
     return new ResponseEntity<>(studentDtoList, HttpStatus.OK);
   }
 
   @GetMapping("/{id}/subjects")
-  public ResponseEntity<StudentDtoForSubject> getStudentWithSubjectList(@PathVariable(name = "id") Integer id)
-     {
-    StudentDtoForSubject studentDtoForSubject = this.studentService.getStudentById(id);
+  @RolesAllowed({"ROLE_STUDENT", "ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  public ResponseEntity<StudentDtoForSubject> getStudentWithSubjectList(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal Jwt jwt)
+  {
+    StudentDtoForSubject studentDtoForSubject = this.studentService.getStudentById(id, jwt);
     return new ResponseEntity<>(studentDtoForSubject, HttpStatus.OK);
   }
 
   @PostMapping()
+  @RolesAllowed({"ROLE_OFFICEADMIN"})
   public ResponseEntity<String> postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
     StudentDto studentDto = this.studentService.postStudent(studentCreationDto);
     String ans = "";
@@ -51,7 +57,8 @@ public class StudentController {
   }
 
   @PostMapping("/{id}/subjects")
-  public ResponseEntity<StudentDto> assignSubjectsToStudent(@PathVariable(name = "id") Integer id,
+  @RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  public ResponseEntity<StudentDto> assignSubjectToStudent(@PathVariable(name = "id") Integer id,
                                                             @RequestBody List<SubjectDto> subjectDtoList)
     {
     StudentDto studentDto = this.studentService.assignSubjectsToStudent(id, subjectDtoList);
