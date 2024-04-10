@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ public class TeacherController {
   TeacherService teacherService;
 
   @GetMapping()
-  @RolesAllowed({"ROLE_STUDENT", "ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER')")
   public ResponseEntity<List<TeacherDtoForList>> getTeachers(@RequestParam(name = "minAge", required = false) Integer minAge,
                                                              @RequestParam(name = "maxAge", required = false) Integer maxAge,
                                                              @RequestParam(name = "gender", required = false) String gender,
@@ -40,16 +41,17 @@ public class TeacherController {
   }
 
   @GetMapping("/{id}/subjects")
-  @RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
-  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal Jwt jwt){
-   //////////////////////////////////////////////////////////////////
-    TeacherDto teacherDto = this.teacherService.getTeacherById(id, jwt);
+  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN') or hasRole('ROLE_TEACHER') and #id == authentication.token.claims['UserId']")
+  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Long id){
+    String inputTeacherId = id.toString();
+    Integer tid = Integer.parseInt(inputTeacherId);
+    TeacherDto teacherDto = this.teacherService.getTeacherById(tid);
     return new ResponseEntity<>(teacherDto, HttpStatus.OK);
   }
 
 
   @PostMapping()
-  @RolesAllowed({"ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
   public ResponseEntity<TeacherDto> postTeacher(@Valid @RequestBody TeacherCreationDto teacherCreationDto) {
     TeacherDto teacherDto = this.teacherService.insertTeacher(teacherCreationDto);
     return new ResponseEntity<>(teacherDto, HttpStatus.CREATED);

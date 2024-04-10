@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,22 +29,26 @@ public class StudentController {
   StudentService studentService;
 
   @GetMapping()
-  @RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT')")
   public ResponseEntity<List<StudentDtoForList>> getStudents() {
     List<StudentDtoForList> studentDtoList = this.studentService.getAllStudent();
     return new ResponseEntity<>(studentDtoList, HttpStatus.OK);
   }
 
   @GetMapping("/{id}/subjects")
-  @RolesAllowed({"ROLE_STUDENT", "ROLE_TEACHER", "ROLE_OFFICEADMIN"})
-  public ResponseEntity<StudentDtoForSubject> getStudentWithSubjectList(@PathVariable(name = "id") Integer id, @AuthenticationPrincipal Jwt jwt)
+  @PreAuthorize("hasAnyRole('ROLE_TEACHER','ROLE_OFFICE_ADMIN') or (hasRole('ROLE_STUDENT') and #id == authentication.token.claims['UserId'])")
+//  @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER') or (hasRole('ROLE_STUDENT') and #id == authentication.token.claims['assc_id'])")
+  public ResponseEntity<StudentDtoForSubject> getStudentWithSubjectList(@PathVariable(name = "id") Long id)
   {
-    StudentDtoForSubject studentDtoForSubject = this.studentService.getStudentById(id, jwt);
+    String s = id.toString();
+    System.out.println(id);
+    Integer sid = Integer.parseInt(s);
+    StudentDtoForSubject studentDtoForSubject = this.studentService.getStudentById(sid);
     return new ResponseEntity<>(studentDtoForSubject, HttpStatus.OK);
   }
 
   @PostMapping()
-  @RolesAllowed({"ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
   public ResponseEntity<String> postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
     StudentDto studentDto = this.studentService.postStudent(studentCreationDto);
     String ans = "";
@@ -57,12 +62,11 @@ public class StudentController {
   }
 
   @PostMapping("/{id}/subjects")
-  @RolesAllowed({"ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER')")
   public ResponseEntity<StudentDto> assignSubjectToStudent(@PathVariable(name = "id") Integer id,
                                                             @RequestBody List<SubjectDto> subjectDtoList)
     {
     StudentDto studentDto = this.studentService.assignSubjectsToStudent(id, subjectDtoList);
     return new ResponseEntity<>(studentDto, HttpStatus.OK);
   }
-
 }

@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
@@ -33,14 +32,15 @@ public class MessController {
     }
 
     @PostMapping("/mess")
-    @RolesAllowed({"ROLE_MESS_OWNER"})
+    @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
     public ResponseEntity<MessDto> createMess(@Valid @RequestBody MessCreationDto messCreationDto){
         MessDto messDto = this.messService.createMess(messCreationDto);
         return new ResponseEntity<>(messDto, HttpStatus.CREATED);
     }
 
-    @GetMapping("/mess/{mess_id}/owners")
-  @RolesAllowed({"MESS_OWNER"})
+
+  @GetMapping("/mess/{mess_id}/owners")
+  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')or hasRole('ROLE_MESS_OWNER') and #mess_id == authentication.token.claims['UserId']")
   public ResponseEntity<MessOwnersDto> getAllOwners(@PathVariable("mess_id") Integer mess_id){
     MessOwnersDto messOwnersDto = this.messService.getAllOwners(mess_id);
     return ResponseEntity.ok(messOwnersDto);

@@ -29,14 +29,10 @@ public class TeacherService {
             return this.teacherMapper.toDtoList(teacherEntityList);
         }
 
-        public TeacherDto getTeacherById (Integer id,  Jwt jwt){
 
-            String string = jwt.getClaim("UserId").toString();
-            Integer tid =Integer.parseInt(string);
-            if(jwt.getClaim("Role").equals("ROLE_TEACHER") && !tid.equals(id))
-                throw new UnauthorizedException("This resource is not allowed");
+        public TeacherDto getTeacherById (Integer id){
 
-            TeacherEntity teacherEntity = teacherRepository.findTeacherById(id);
+             TeacherEntity teacherEntity = teacherRepository.findTeacherById(id);
 
             if (teacherEntity == null) {
                 throw new ResourceNotFoundException("teacher with id " + id + " not found");

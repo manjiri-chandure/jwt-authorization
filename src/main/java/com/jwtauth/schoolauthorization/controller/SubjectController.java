@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,14 +26,14 @@ public class SubjectController {
   SubjectService subjectService;
 
   @GetMapping()
-  @RolesAllowed({"ROLE_STUDENT", "ROLE_TEACHER", "ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT')")
   public ResponseEntity<List<SubjectDto>> getSubjects() {
     List<SubjectDto> subjectDtoList = this.subjectService.getSubjects();
     return new ResponseEntity<>(subjectDtoList, HttpStatus.OK);
   }
 
   @PostMapping()
-  @RolesAllowed({"ROLE_OFFICEADMIN"})
+  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
   public ResponseEntity<SubjectDto> postSubject(@Valid @RequestBody SubjectCreationDto subjectCreationDto) {
     SubjectDto subjectDto = this.subjectService.insertSubject(subjectCreationDto);
     return new ResponseEntity<>(subjectDto, HttpStatus.CREATED);

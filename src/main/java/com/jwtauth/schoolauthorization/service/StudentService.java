@@ -28,18 +28,17 @@ public class StudentService {
     SubjectMapper subjectMapper;
 
 
+
     public List<StudentDtoForList> getAllStudent() {
         List<StudentEntity> studentEntityList = this.studentRepository.findAllStudents();
         return this.studentMapper.toDtoList(studentEntityList);
     }
 
 
-  public StudentDtoForSubject getStudentById(Integer id , Jwt jwt){
-     StudentEntity studentEntity = this.studentRepository.findStudentById(id);
-     String string = jwt.getClaim("UserId").toString();
-     Integer sid =Integer.parseInt(string);
-    if(jwt.getClaim("Role").equals("ROLE_STUDENT") && !sid.equals(id))
-       throw new UnauthorizedException("This resource is not allowed");
+
+  public StudentDtoForSubject getStudentById(Integer id){
+
+    StudentEntity studentEntity = this.studentRepository.findStudentById(id);
     if (studentEntity == null) {
             throw new ResourceNotFoundException("student with id " + id + " not found");
     }

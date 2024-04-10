@@ -14,25 +14,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/mess_owner")
-@RolesAllowed("ROLE_MESS_OWNER")
 public class MessOwnerController {
-  @Autowired
-  MessOwnerService messOwnerService;
 
-  @GetMapping("")
-  public ResponseEntity<List<MessOwnerDto>> getMessOwners() {
-    List<MessOwnerDto> messOwners = this.messOwnerService.getMessOwners();
-    return ResponseEntity.ok(messOwners);
-  }
-
+    @Autowired
+    MessOwnerService messOwnerService;
+    @GetMapping("")
+    @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
+    public ResponseEntity<List<MessOwnerDto>> getMessOwners(){
+        List<MessOwnerDto> messOwners = this.messOwnerService.getMessOwners();
+        return ResponseEntity.ok(messOwners);
+    }
 
     @PostMapping("")
+    @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_MESS_OWNER')")
     public ResponseEntity<MessOwnerDto> createMessOwner(@Valid @RequestBody MessOwnerCreationDto messOwnerCreationDto)
        {
         MessOwnerDto messOwnerDto = this.messOwnerService.createMessOwner(messOwnerCreationDto);
