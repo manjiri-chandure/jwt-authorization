@@ -24,16 +24,18 @@ public class GlobalExceptionHandler {
   }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<?> resourceAlreadyExistsException(UnauthorizedException ux, WebRequest request){
+    public ResponseEntity<?> UnauthorizedException(UnauthorizedException ux, WebRequest request){
         ErrorDetails errorDetails = new ErrorDetails(new Date(), ux.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
 
 
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
-    ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
-    return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-  }
+//  @ExceptionHandler(Exception.class)
+//  public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
+//    ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+//    return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+//  }
+//
+
 
 }

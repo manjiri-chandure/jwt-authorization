@@ -36,12 +36,7 @@ public class SecurityConfig {
 
   @Autowired
   private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-  private SecretKey stringToSecretKey(String secretKey) {
-    return new OctetSequenceKey.Builder(secretKey.getBytes())
-      .algorithm(JWSAlgorithm.HS512)
-      .build()
-      .toSecretKey();
-  }
+
   @Bean
   public JwtDecoder jwtDecoder() {
 
