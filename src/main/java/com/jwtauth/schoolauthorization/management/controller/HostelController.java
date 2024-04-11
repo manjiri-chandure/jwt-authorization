@@ -22,15 +22,13 @@ public class HostelController{
     HostelService hostelService;
     @GetMapping("/hostels")
     @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_STUDENT')")
-    public ResponseEntity<List<HostelDto>> gethostels(){
-        List<HostelDto> hostels = this.hostelService.getAllHostels();
-        return ResponseEntity.ok(hostels);
+    public List<HostelDto> gethostels(){
+        return this.hostelService.getAllHostels();
     }
 
     @PostMapping("/hostels")
     @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-    public ResponseEntity<HostelDto> createHostel(@Valid @RequestBody HostelCreationDto hostelCreationDto){
-        HostelDto hostelDto = this.hostelService.createHostel(hostelCreationDto);
-        return new ResponseEntity<>(hostelDto, HttpStatus.CREATED);
+    public HostelDto createHostel(@Valid @RequestBody HostelCreationDto hostelCreationDto){
+        return this.hostelService.createHostel(hostelCreationDto);
     }
 }

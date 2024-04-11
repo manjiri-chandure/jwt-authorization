@@ -26,17 +26,15 @@ public class MessOwnerController {
     MessOwnerService messOwnerService;
     @GetMapping("")
     @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-    public ResponseEntity<List<MessOwnerDto>> getMessOwners(){
-        List<MessOwnerDto> messOwners = this.messOwnerService.getMessOwners();
-        return ResponseEntity.ok(messOwners);
+    public List<MessOwnerDto> getMessOwners(){
+        return this.messOwnerService.getMessOwners();
     }
 
     @PostMapping("")
     @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_MESS_OWNER')")
-    public ResponseEntity<MessOwnerDto> createMessOwner(@Valid @RequestBody MessOwnerCreationDto messOwnerCreationDto)
+    public MessOwnerDto createMessOwner(@Valid @RequestBody MessOwnerCreationDto messOwnerCreationDto)
        {
-        MessOwnerDto messOwnerDto = this.messOwnerService.createMessOwner(messOwnerCreationDto);
-        return new ResponseEntity<>(messOwnerDto, HttpStatus.CREATED);
+        return this.messOwnerService.createMessOwner(messOwnerCreationDto);
        }
 
 }

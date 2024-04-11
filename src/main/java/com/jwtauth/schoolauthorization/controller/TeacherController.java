@@ -31,29 +31,26 @@ public class TeacherController {
 
   @GetMapping()
   @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER')")
-  public ResponseEntity<List<TeacherDtoForList>> getTeachers(@RequestParam(name = "minAge", required = false) Integer minAge,
+  public List<TeacherDtoForList> getTeachers(@RequestParam(name = "minAge", required = false) Integer minAge,
                                                              @RequestParam(name = "maxAge", required = false) Integer maxAge,
                                                              @RequestParam(name = "gender", required = false) String gender,
                                                              @RequestParam(name = "subject", required = false) String subject) {
 
-    List<TeacherDtoForList> teacherDtoList = this.teacherService.getTeachers(minAge, maxAge, gender, subject);
-    return new ResponseEntity<>(teacherDtoList, HttpStatus.OK);
+    return this.teacherService.getTeachers(minAge, maxAge, gender, subject);
   }
 
   @GetMapping("/{id}/subjects")
   @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN') or hasRole('ROLE_TEACHER') and #id == authentication.token.claims['UserId']")
-  public ResponseEntity<TeacherDto> getTeacherWithSubjectList(@PathVariable(name = "id") Long id){
+  public TeacherDto getTeacherWithSubjectList(@PathVariable(name = "id") Long id){
     String inputTeacherId = id.toString();
     Integer tid = Integer.parseInt(inputTeacherId);
-    TeacherDto teacherDto = this.teacherService.getTeacherById(tid);
-    return new ResponseEntity<>(teacherDto, HttpStatus.OK);
+    return this.teacherService.getTeacherById(tid);
   }
 
 
   @PostMapping()
   @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-  public ResponseEntity<TeacherDto> postTeacher(@Valid @RequestBody TeacherCreationDto teacherCreationDto) {
-    TeacherDto teacherDto = this.teacherService.insertTeacher(teacherCreationDto);
-    return new ResponseEntity<>(teacherDto, HttpStatus.CREATED);
+  public TeacherDto postTeacher(@Valid @RequestBody TeacherCreationDto teacherCreationDto) {
+   return this.teacherService.insertTeacher(teacherCreationDto);
   }
 }

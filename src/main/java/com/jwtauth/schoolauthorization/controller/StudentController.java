@@ -30,43 +30,33 @@ public class StudentController {
 
   @GetMapping()
   @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT')")
-  public ResponseEntity<List<StudentDtoForList>> getStudents() {
-    List<StudentDtoForList> studentDtoList = this.studentService.getAllStudent();
-    return new ResponseEntity<>(studentDtoList, HttpStatus.OK);
+  public List<StudentDtoForList> getStudents() {
+    return this.studentService.getAllStudent();
   }
 
   @GetMapping("/{id}/subjects")
   @PreAuthorize("hasAnyRole('ROLE_TEACHER','ROLE_OFFICE_ADMIN') or (hasRole('ROLE_STUDENT') and #id == authentication.token.claims['UserId'])")
-//  @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER') or (hasRole('ROLE_STUDENT') and #id == authentication.token.claims['assc_id'])")
-  public ResponseEntity<StudentDtoForSubject> getStudentWithSubjectList(@PathVariable(name = "id") Long id)
+  public StudentDtoForSubject getStudentWithSubjectList(@PathVariable(name = "id") Long id)
   {
     String s = id.toString();
     System.out.println(id);
     Integer sid = Integer.parseInt(s);
-    StudentDtoForSubject studentDtoForSubject = this.studentService.getStudentById(sid);
-    return new ResponseEntity<>(studentDtoForSubject, HttpStatus.OK);
+    return this.studentService.getStudentById(sid);
+
   }
 
   @PostMapping()
   @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-  public ResponseEntity<String> postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
-    StudentDto studentDto = this.studentService.postStudent(studentCreationDto);
-    String ans = "";
-    if(studentDto != null){
-        ans += "Student created with Id "+studentDto.getId();
-    }
-    else{
-      ans += "Student Not Created";
-    }
-    return new ResponseEntity<>(ans, HttpStatus.CREATED);
+  public StudentDto postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
+    return this.studentService.postStudent(studentCreationDto);
   }
 
   @PostMapping("/{id}/subjects")
   @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER')")
-  public ResponseEntity<StudentDto> assignSubjectToStudent(@PathVariable(name = "id") Integer id,
+  public StudentDto assignSubjectToStudent(@PathVariable(name = "id") Integer id,
                                                             @RequestBody List<SubjectDto> subjectDtoList)
     {
-    StudentDto studentDto = this.studentService.assignSubjectsToStudent(id, subjectDtoList);
-    return new ResponseEntity<>(studentDto, HttpStatus.OK);
+    return this.studentService.assignSubjectsToStudent(id, subjectDtoList);
+
   }
 }

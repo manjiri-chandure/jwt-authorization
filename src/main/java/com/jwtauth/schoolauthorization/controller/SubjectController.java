@@ -27,16 +27,14 @@ public class SubjectController {
 
   @GetMapping()
   @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER', 'ROLE_STUDENT')")
-  public ResponseEntity<List<SubjectDto>> getSubjects() {
-    List<SubjectDto> subjectDtoList = this.subjectService.getSubjects();
-    return new ResponseEntity<>(subjectDtoList, HttpStatus.OK);
+  public List<SubjectDto> getSubjects() {
+    return this.subjectService.getSubjects();
   }
 
   @PostMapping()
   @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-  public ResponseEntity<SubjectDto> postSubject(@Valid @RequestBody SubjectCreationDto subjectCreationDto) {
-    SubjectDto subjectDto = this.subjectService.insertSubject(subjectCreationDto);
-    return new ResponseEntity<>(subjectDto, HttpStatus.CREATED);
-  }
+  public SubjectDto postSubject(@Valid @RequestBody SubjectCreationDto subjectCreationDto) {
+    return this.subjectService.insertSubject(subjectCreationDto);
+    }
 
 }

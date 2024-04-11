@@ -25,23 +25,20 @@ public class MessController {
     MessService messService;
     @GetMapping("/mess")
     @RolesAllowed({"ROLE_STUDENT", "ROLE_MESS_OWNER"})
-    public ResponseEntity<List<MessDto>> getmess(){
-        List<MessDto> mess = this.messService.getAllMess();
-        return ResponseEntity.ok(mess);
+    public List<MessDto> getmess(){
+        return this.messService.getAllMess();
     }
 
     @PostMapping("/mess")
     @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-    public ResponseEntity<MessDto> createMess(@Valid @RequestBody MessCreationDto messCreationDto){
-        MessDto messDto = this.messService.createMess(messCreationDto);
-        return new ResponseEntity<>(messDto, HttpStatus.CREATED);
+    public MessDto createMess(@Valid @RequestBody MessCreationDto messCreationDto){
+        return this.messService.createMess(messCreationDto);
     }
 
 
   @GetMapping("/mess/{mess_id}/owners")
   @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')or hasRole('ROLE_MESS_OWNER') and #mess_id == authentication.token.claims['UserId']")
-  public ResponseEntity<MessOwnersDto> getAllOwners(@PathVariable("mess_id") Integer mess_id){
-    MessOwnersDto messOwnersDto = this.messService.getAllOwners(mess_id);
-    return ResponseEntity.ok(messOwnersDto);
-  }
+  public MessOwnersDto getAllOwners(@PathVariable("mess_id") Integer mess_id){
+    return this.messService.getAllOwners(mess_id);
+    }
 }
