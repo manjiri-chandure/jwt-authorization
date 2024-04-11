@@ -59,27 +59,11 @@ public class SecurityConfig {
           .anyRequest()
           .authenticated()
          )
-         .oauth2ResourceServer(configure -> configure.jwt(jwt-> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+         .oauth2ResourceServer(configure -> configure.jwt(Customizer.withDefaults())
          .authenticationEntryPoint(jwtAuthenticationEntryPoint))
              .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(jwtAccessDeniedHandler))
              .build();
 }
-
-//  @Bean
-//  public AuthenticationEntryPoint authenticationEntryPoint() {
-//    return (request, response, authException) -> {
-//      response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//      response.getWriter().write("Unauthorized");
-//    };
-//  }
-//
-//  public AccessDeniedHandler accessDeniedHandler(){
-//    return (request, response, authException) -> {
-//      response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//      response.getWriter().write("Access Denied!!");
-//    };
-//  }
-
 
   @Bean
   public JwtAuthenticationConverter jwtAuthenticationConverter() {
