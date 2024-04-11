@@ -1,10 +1,9 @@
 package com.jwtauth.schoolauthorization.management.controller;
-
-import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
-import com.jwtauth.schoolauthorization.management.dto.MessCreationDto;
-import com.jwtauth.schoolauthorization.management.dto.MessDto;
-import com.jwtauth.schoolauthorization.management.dto.MessOwnersDto;
-import com.jwtauth.schoolauthorization.management.service.MessService;
+import com.jwtauth.schoolauthorization.Exception.ResourceNotFoundException;
+import com.jwtauth.schoolauthorization.ManagementDto.MessCreationDto;
+import com.jwtauth.schoolauthorization.ManagementDto.MessDto;
+import com.jwtauth.schoolauthorization.ManagementDto.MessOwnersDto;
+import com.jwtauth.schoolauthorization.ManagementService.MessService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
