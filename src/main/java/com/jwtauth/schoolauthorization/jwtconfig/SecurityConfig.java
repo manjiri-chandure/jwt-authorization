@@ -37,6 +37,10 @@ public class SecurityConfig {
   @Autowired
   private JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+  private static final String[] AUTH_WHITE_LIST = {
+          "/v3/api-docs/**",
+          "/swagger-ui/**"
+  };
   @Bean
   public JwtDecoder jwtDecoder() {
 
@@ -49,8 +53,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
      return httpSecurity.authorizeHttpRequests(
          authorize ->
-          authorize.requestMatchers("/v3/api-docs/**").permitAll()
-          .requestMatchers("/swagger-ui/**").permitAll()
+          authorize.requestMatchers(AUTH_WHITE_LIST).permitAll()
           .anyRequest()
           .authenticated()
          )
