@@ -19,7 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
-@RequestMapping("/mess_owner")
+@RequestMapping("/mess_owners")
 public class MessOwnerController {
 
     @Autowired
