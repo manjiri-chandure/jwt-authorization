@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(jsr250Enabled = true)
+@EnableMethodSecurity()
 public class SecurityConfig {
 
   @Value("${jwt.secret}")
@@ -33,6 +33,9 @@ public class SecurityConfig {
   
   @Autowired
   private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+  @Autowired
+  private JwtAccessDeniedHandler jwtAccessDeniedHandler;
   private SecretKey stringToSecretKey(String secretKey) {
     return new OctetSequenceKey.Builder(secretKey.getBytes())
       .algorithm(JWSAlgorithm.HS512)
@@ -49,22 +52,33 @@ public class SecurityConfig {
   }
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-     httpSecurity.authorizeHttpRequests(authorize ->             // Here we set authentication for all endpoints
-        authorize.requestMatchers("/v3/api-docs/**").permitAll().
-                requestMatchers("/swagger-ui/**").permitAll().
-          anyRequest().authenticated()).oauth2ResourceServer(configure -> configure.jwt(Customizer.withDefaults()).authenticationEntryPoint(jwtAuthenticationEntryPoint)
+     return httpSecurity.authorizeHttpRequests(
+         authorize ->
+          authorize.requestMatchers("/v3/api-docs/**").permitAll()
+          .requestMatchers("/swagger-ui/**").permitAll()
+          .anyRequest()
+          .authenticated()
+         )
+         .oauth2ResourceServer(configure -> configure.jwt(jwt-> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+         .authenticationEntryPoint(jwtAuthenticationEntryPoint))
+             .exceptionHandling(exceptionHandling -> exceptionHandling.accessDeniedHandler(jwtAccessDeniedHandler))
+             .build();
+}
 
-    );
-     return httpSecurity.build();
-  }
-
-  @Bean
-  public AuthenticationEntryPoint authenticationEntryPoint() {
-    return (request, response, authException) -> {
-      response.setStatus(HttpStatus.UNAUTHORIZED.value());
-      response.getWriter().write("Unauthorized");
-    };
-  }
+//  @Bean
+//  public AuthenticationEntryPoint authenticationEntryPoint() {
+//    return (request, response, authException) -> {
+//      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//      response.getWriter().write("Unauthorized");
+//    };
+//  }
+//
+//  public AccessDeniedHandler accessDeniedHandler(){
+//    return (request, response, authException) -> {
+//      response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//      response.getWriter().write("Access Denied!!");
+//    };
+//  }
 
 
   @Bean
