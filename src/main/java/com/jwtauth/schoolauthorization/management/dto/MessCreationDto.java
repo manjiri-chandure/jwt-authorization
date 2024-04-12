@@ -7,12 +7,14 @@ import lombok.Data;
 
 @Data
 public class MessCreationDto {
+    @NotNull
     @NotBlank(message = "mess name can't be blank")
     private String name;
     @NotNull
     @Pattern(regexp="^\\d{10}$", message = "Ivalid number, enter 10 digit only")
     private String contactNumber;
     @NotBlank(message = "veg or non-veg type mess")
+    @Pattern(regexp="veg|Veg|non-veg|Non-Veg", message = "mess type can be veg/Veg/non-veg/Non-Veg")
     private String messType;
     @NotBlank(message = "location can't be blank")
     private String location;

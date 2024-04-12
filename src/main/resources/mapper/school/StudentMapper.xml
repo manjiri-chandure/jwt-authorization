@@ -34,6 +34,12 @@
           (select sub_id from stud_sub where stud_id = #{id})
     </select>
 
+    <select id="findStudentSubjectId"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Integer">
+        select id from stud_sub where stud_id =#{studId} and sub_id =#{subId}
+    </select>
+
    <insert id="addStudent" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.entity.StudentEntity" keyColumn="id">
         insert into student (first_name, last_name, gender, age)
         values (#{firstName},#{lastName},#{gender},#{age})

@@ -53,8 +53,7 @@ public class StudentController {
 
   @PostMapping("/{id}/subjects")
   @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER')")
-  public StudentDto assignSubjectToStudent(@PathVariable(name = "id") Integer id,
-                                                            @RequestBody List<SubjectDto> subjectDtoList)
+  public StudentDto assignSubjectToStudent(@Valid @RequestBody List<SubjectDto> subjectDtoList, @PathVariable(name = "id") Integer id)
     {
     return this.studentService.assignSubjectsToStudent(id, subjectDtoList);
 
