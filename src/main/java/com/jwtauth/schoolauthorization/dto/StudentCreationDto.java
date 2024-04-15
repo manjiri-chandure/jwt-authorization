@@ -12,5 +12,6 @@ public class StudentCreationDto {
     private String gender;
     @Min(value = 10, message = "age must be greater or equals to 10 & less than 26")
     @Max(value = 25, message = "age must be less or equals to 25 & greater than 9")
+    @NotNull(message = "age can't be null")
     private Integer age;
 }
