@@ -1,7 +1,7 @@
 package com.jwtauth.schoolauthorization.exception;
 
-public class UnauthorizedException extends RuntimeException{
-    public UnauthorizedException(String message){
-        super(message);
-    }
+public class UnauthorizedException extends RuntimeException {
+  public UnauthorizedException(String message) {
+    super(message);
+  }
 }

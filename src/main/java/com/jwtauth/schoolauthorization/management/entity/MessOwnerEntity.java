@@ -10,13 +10,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessOwnerEntity {
-    private Integer id;
-    private String firstName;
-    private String lastName;
-    private Integer age;
-    private String gender;
-    private String contactNumber;
-    private Integer messId;
+  private Integer id;
+  private String firstName;
+  private String lastName;
+  private Integer age;
+  private String gender;
+  private String contactNumber;
+  private Integer messId;
 }
 
 

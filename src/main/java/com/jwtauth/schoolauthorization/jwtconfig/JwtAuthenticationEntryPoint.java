@@ -1,6 +1,5 @@
 package com.jwtauth.schoolauthorization.jwtconfig;
 
-import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,14 +13,15 @@ import java.io.PrintWriter;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
-	@Override
-	public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		response.setContentType("application/json");
+  @Override
+  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
+    throws IOException, ServletException {
+    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    response.setContentType("application/json");
 
-		PrintWriter out = response.getWriter();
-		out.print("{\"message\":\"Wrong JWT token\"}");
-		out.flush();
-	}
+    PrintWriter out = response.getWriter();
+    out.print("{\"message\":\"Wrong JWT token\"}");
+    out.flush();
+  }
 
 }

@@ -10,9 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessEntity {
-    private Integer id;
-    private String name;
-    private String contactNumber;
-    private String messType;
-    private String location;
+  private Integer id;
+  private String name;
+  private String contactNumber;
+  private String messType;
+  private String location;
 }
