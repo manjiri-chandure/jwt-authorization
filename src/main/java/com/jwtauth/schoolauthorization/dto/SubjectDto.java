@@ -6,10 +6,10 @@ import lombok.Data;
 
 @Data
 public class SubjectDto {
-    @Positive(message = "subject id should be positive integer")
-    @NotNull(message = "subject id can't be null")
-    private Integer id;
+  @Positive(message = "subject id should be positive integer")
+  @NotNull(message = "subject id can't be null")
+  private Integer id;
 
-    @NotNull(message = "subject name can't be null")
-    private String name;
+  @NotNull(message = "subject name can't be null")
+  private String name;
 }

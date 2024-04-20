@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class SubjectEntity {
-    private Integer id;
-    private String name;
-    @JsonBackReference
-    private TeacherEntity teacherEntity;
+  private Integer id;
+  private String name;
+  @JsonBackReference
+  private TeacherEntity teacherEntity;
 }

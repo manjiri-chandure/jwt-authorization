@@ -10,8 +10,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HostelEntity {
-    private Integer id;
-    private String name;
-    private String hostelType;
-    private String location;
+  private Integer id;
+  private String name;
+  private String hostelType;
+  private String location;
 }

@@ -1,4 +1,5 @@
 package com.jwtauth.schoolauthorization.service;
+
 import com.jwtauth.schoolauthorization.dto.SubjectCreationDto;
 import com.jwtauth.schoolauthorization.dto.SubjectDto;
 import com.jwtauth.schoolauthorization.entity.SubjectEntity;
@@ -12,23 +13,23 @@ import java.util.List;
 @Service
 public class SubjectService {
 
-    @Autowired
-    SubjectRepository subjectRepository;
+  @Autowired
+  SubjectRepository subjectRepository;
 
-    @Autowired
-    SubjectMapper subjectMapper;
+  @Autowired
+  SubjectMapper subjectMapper;
 
-    public List<SubjectDto> getSubjects(){
+  public List<SubjectDto> getSubjects() {
 
-        List<SubjectEntity> subjectEntityList = this.subjectRepository.findAllSubjects();
-        return this.subjectMapper.toDtoList(subjectEntityList);
-    }
+    List<SubjectEntity> subjectEntityList = this.subjectRepository.findAllSubjects();
+    return this.subjectMapper.toDtoList(subjectEntityList);
+  }
 
 
-    public SubjectDto insertSubject(SubjectCreationDto subjectCreationDto){
-       SubjectEntity subjectEntity = this.subjectMapper.toSubjectEntity(subjectCreationDto);
-       this.subjectRepository.addSubject(subjectEntity);
-       return this.subjectMapper.toDto(subjectEntity);
+  public SubjectDto insertSubject(SubjectCreationDto subjectCreationDto) {
+    SubjectEntity subjectEntity = this.subjectMapper.toSubjectEntity(subjectCreationDto);
+    this.subjectRepository.addSubject(subjectEntity);
+    return this.subjectMapper.toDto(subjectEntity);
 
-    }
+  }
 }

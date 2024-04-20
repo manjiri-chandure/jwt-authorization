@@ -7,13 +7,13 @@ import java.util.List;
 
 @Data
 public class TeacherEntity {
-    private Integer id;
-    private String firstName;
-    private String lastName;
-    private String gender;
-    private Integer age;
-    private String phoneNumber;
-    private String email;
-    @JsonManagedReference
-    private List<SubjectEntity> subjectEntities;
+  private Integer id;
+  private String firstName;
+  private String lastName;
+  private String gender;
+  private Integer age;
+  private String phoneNumber;
+  private String email;
+  @JsonManagedReference
+  private List<SubjectEntity> subjectEntities;
 }

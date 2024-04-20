@@ -1,4 +1,5 @@
 package com.jwtauth.schoolauthorization.management.mapstruct;
+
 import com.jwtauth.schoolauthorization.management.dto.MessCreationDto;
 import com.jwtauth.schoolauthorization.management.dto.MessDto;
 import com.jwtauth.schoolauthorization.management.dto.MessOwnersDto;
@@ -11,23 +12,24 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = MessOwnerMapper.class)
 public interface MessMapper {
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "contactNumber", source = "contactNumber")
-    @Mapping(target = "messType", source = "messType")
-    @Mapping(target = "location", source = "location")
-    MessEntity toEntity(MessCreationDto messCreationDto);
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "contactNumber", source = "contactNumber")
-    @Mapping(target = "messType", source = "messType")
-    @Mapping(target = "location", source = "location")
-    MessDto toDto(MessEntity messEntity);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "name", source = "name")
+  @Mapping(target = "contactNumber", source = "contactNumber")
+  @Mapping(target = "messType", source = "messType")
+  @Mapping(target = "location", source = "location")
+  MessEntity toEntity(MessCreationDto messCreationDto);
 
-    List<MessDto> toDtoList(List<MessEntity> messEntities);
+  @Mapping(target = "id", source = "id")
+  @Mapping(target = "name", source = "name")
+  @Mapping(target = "contactNumber", source = "contactNumber")
+  @Mapping(target = "messType", source = "messType")
+  @Mapping(target = "location", source = "location")
+  MessDto toDto(MessEntity messEntity);
 
-    @Mapping(source = "messEntity.id", target = "id")
-    @Mapping(source = "messEntity.name", target = "name")
-    @Mapping(source = "messOwnerEntities", target = "messOwnerDtos")
-    MessOwnersDto toMessOwnersDto(MessEntity messEntity, List<MessOwnerEntity> messOwnerEntities);
+  List<MessDto> toDtoList(List<MessEntity> messEntities);
+
+  @Mapping(source = "messEntity.id", target = "id")
+  @Mapping(source = "messEntity.name", target = "name")
+  @Mapping(source = "messOwnerEntities", target = "messOwnerDtos")
+  MessOwnersDto toMessOwnersDto(MessEntity messEntity, List<MessOwnerEntity> messOwnerEntities);
 }
