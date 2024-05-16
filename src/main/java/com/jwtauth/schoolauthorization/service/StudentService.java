@@ -9,12 +9,15 @@ import com.jwtauth.schoolauthorization.mapstruct.SubjectMapper;
 import com.jwtauth.schoolauthorization.mapstruct.StudentMapper;
 import com.jwtauth.schoolauthorization.repository.StudentRepository;
 import com.jwtauth.schoolauthorization.repository.SubjectRepository;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class StudentService {
@@ -48,8 +51,10 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
+    @KafkaListener(topics = "students", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
     public StudentDto postStudent(StudentCreationDto studentCreationDto) {
         StudentEntity studentEntity = this.studentMapper.toEntity(studentCreationDto);
+        System.out.println(studentEntity);
         this.studentRepository.addStudent(studentEntity);
         return this.studentMapper.toDto(studentEntity);
     }
