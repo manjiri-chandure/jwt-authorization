@@ -14,8 +14,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.util.backoff.BackOff;
+import org.springframework.util.backoff.FixedBackOff;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,6 +48,7 @@ public class StudentService {
 
 
 
+
   public List<StudentDtoForList> getAllStudent() {
         List<StudentEntity> studentEntityList = this.studentRepository.findAllStudents();
         return this.studentMapper.toDtoList(studentEntityList);
@@ -60,7 +66,7 @@ public class StudentService {
     }
 
     @KafkaListener(topics = "students", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
-    public StudentDto postStudent(StudentCreationDto studentCreationDto) throws ValidationException{
+    public StudentDto postStudent(StudentCreationDto studentCreationDto){
       StudentEntity studentEntity = null;
       LogDto logDto = new LogDto();
       logDto.setFullName(studentCreationDto.getFullName());
