@@ -65,17 +65,22 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
-    @KafkaListener(topics = "students", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
-    public StudentDto postStudent(StudentCreationDto studentCreationDto){
+    @KafkaListener(topics = "Student", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
+    public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
+      System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+studentCreationDtoByKafka);
       StudentEntity studentEntity = null;
       LogDto logDto = new LogDto();
-      logDto.setFullName(studentCreationDto.getFullName());
-      logDto.setAge(studentCreationDto.getAge());
-      logDto.setGender(studentCreationDto.getGender());
+      System.out.println(studentCreationDtoByKafka.getLid());
+      logDto.setLid(studentCreationDtoByKafka.getLid());
+      System.out.println("--------------------lid----------------------"+logDto.getLid());
+      logDto.setFullName(studentCreationDtoByKafka.getFullName());
+      logDto.setAge(studentCreationDtoByKafka.getAge());
+      logDto.setGender(studentCreationDtoByKafka.getGender());
       logDto.setTimeStamp(new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()));
       try {
-        validateStudentCreationDto(studentCreationDto);
-        studentEntity = this.studentMapper.toEntity(studentCreationDto);
+        validateStudentCreationDto(studentCreationDtoByKafka);
+        StudentCreationDto studentCreationDto1 = this.studentMapper.toStudentCreationDtoFromKafkaDto(studentCreationDtoByKafka);
+        studentEntity = this.studentMapper.toEntity(studentCreationDto1);
         this.studentRepository.addStudent(studentEntity);
         logDto.setResponseMessage("OK: Student Created Successfully");
         logDto.setStatusCode(200);
@@ -94,6 +99,7 @@ public class StudentService {
         messageProducer.sendMessageToTopic(logDto);
         System.out.println(logDto);
       }
+
       if(studentEntity != null)
         return this.studentMapper.toDto(studentEntity);
       return null;
@@ -101,11 +107,11 @@ public class StudentService {
     }
 
 
-  private void validateStudentCreationDto(StudentCreationDto dto) {
-    Set<ConstraintViolation<StudentCreationDto>> violations = validator.validate(dto, KafkaValidationgroup.class);
+  private void validateStudentCreationDto(StudentCreationDtoByKafka dto) {
+    Set<ConstraintViolation<StudentCreationDtoByKafka>> violations = validator.validate(dto, KafkaValidationgroup.class);
     if (!violations.isEmpty()) {
       StringBuilder sb = new StringBuilder();
-      for (ConstraintViolation<StudentCreationDto> violation : violations) {
+      for (ConstraintViolation<StudentCreationDtoByKafka> violation : violations) {
         sb.append(violation.getMessage()).append(" ");
       }
       throw new ValidationException(sb.toString());

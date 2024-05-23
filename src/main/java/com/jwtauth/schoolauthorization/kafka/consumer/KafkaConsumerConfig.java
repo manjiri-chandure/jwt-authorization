@@ -1,5 +1,6 @@
 package com.jwtauth.schoolauthorization.kafka.consumer;
 import com.jwtauth.schoolauthorization.dto.StudentCreationDto;
+import com.jwtauth.schoolauthorization.dto.StudentCreationDtoByKafka;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.security.oauthbearer.internals.secured.ValidateException;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -23,12 +24,12 @@ import java.util.Map;
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, StudentCreationDto> consumerFactory() {
+    public ConsumerFactory<String, StudentCreationDtoByKafka> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "student");
         return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
-          new JsonDeserializer<>(StudentCreationDto.class, false));
+          new JsonDeserializer<>(StudentCreationDtoByKafka.class, false));
     }
 
 
@@ -52,8 +53,8 @@ public class KafkaConsumerConfig {
 //    }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, StudentCreationDto> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, StudentCreationDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, StudentCreationDtoByKafka> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, StudentCreationDtoByKafka> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 //        factory.setCommonErrorHandler(errorHandler());
 //        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);

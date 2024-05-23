@@ -1,5 +1,6 @@
 package com.jwtauth.schoolauthorization.mapstruct;
 import com.jwtauth.schoolauthorization.dto.StudentCreationDto;
+import com.jwtauth.schoolauthorization.dto.StudentCreationDtoByKafka;
 import com.jwtauth.schoolauthorization.dto.StudentDto;
 import com.jwtauth.schoolauthorization.dto.StudentDtoForList;
 import com.jwtauth.schoolauthorization.dto.StudentDtoForSubject;
@@ -58,4 +59,9 @@ public interface StudentMapper {
     @Mapping(target = "fullName", expression = "java(convertToFullName(studentEntity.getFirstName(), studentEntity.getLastName()))")
     @Mapping(source = "subjectEntities", target = "subjectDtoList")
     StudentDtoForSubject toDtoForSubject(StudentEntity studentEntity);
+
+    @Mapping(source = "fullName", target = "fullName")
+    @Mapping(source = "age", target = "age")
+    @Mapping(source = "gender", target = "gender")
+    StudentCreationDto toStudentCreationDtoFromKafkaDto(StudentCreationDtoByKafka studentCreationDtoByKafka);
 }
