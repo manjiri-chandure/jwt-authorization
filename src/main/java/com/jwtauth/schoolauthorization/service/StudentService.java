@@ -1,23 +1,30 @@
 package com.jwtauth.schoolauthorization.service;
+import com.jwtauth.schoolauthorization.KafkaValidationgroup;
 import com.jwtauth.schoolauthorization.dto.*;
 import com.jwtauth.schoolauthorization.entity.StudentEntity;
 import com.jwtauth.schoolauthorization.entity.SubjectEntity;
 import com.jwtauth.schoolauthorization.exception.ResourceAlreadyExistsException;
 import com.jwtauth.schoolauthorization.exception.ResourceNotFoundException;
-import com.jwtauth.schoolauthorization.exception.UnauthorizedException;
+import com.jwtauth.schoolauthorization.kafka.producer.MessageProducer;
 import com.jwtauth.schoolauthorization.mapstruct.SubjectMapper;
 import com.jwtauth.schoolauthorization.mapstruct.StudentMapper;
 import com.jwtauth.schoolauthorization.repository.StudentRepository;
 import com.jwtauth.schoolauthorization.repository.SubjectRepository;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.util.backoff.BackOff;
+import org.springframework.util.backoff.FixedBackOff;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
 @Service
 public class StudentService {
@@ -33,9 +40,16 @@ public class StudentService {
     @Autowired
     SubjectMapper subjectMapper;
 
+    @Autowired
+    private Validator validator;
+
+    @Autowired
+    private MessageProducer messageProducer;
 
 
-    public List<StudentDtoForList> getAllStudent() {
+
+
+  public List<StudentDtoForList> getAllStudent() {
         List<StudentEntity> studentEntityList = this.studentRepository.findAllStudents();
         return this.studentMapper.toDtoList(studentEntityList);
     }
@@ -51,13 +65,60 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
-    @KafkaListener(topics = "students", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
-    public StudentDto postStudent(StudentCreationDto studentCreationDto) {
-        StudentEntity studentEntity = this.studentMapper.toEntity(studentCreationDto);
-        System.out.println(studentEntity);
+    @KafkaListener(topics = "Student", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
+    public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
+      System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+studentCreationDtoByKafka);
+      StudentEntity studentEntity = null;
+      LogDto logDto = new LogDto();
+      System.out.println(studentCreationDtoByKafka.getLid());
+      logDto.setLid(studentCreationDtoByKafka.getLid());
+      System.out.println("--------------------lid----------------------"+logDto.getLid());
+      logDto.setFullName(studentCreationDtoByKafka.getFullName());
+      logDto.setAge(studentCreationDtoByKafka.getAge());
+      logDto.setGender(studentCreationDtoByKafka.getGender());
+      logDto.setTimeStamp(new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()));
+      try {
+        validateStudentCreationDto(studentCreationDtoByKafka);
+        StudentCreationDto studentCreationDto1 = this.studentMapper.toStudentCreationDtoFromKafkaDto(studentCreationDtoByKafka);
+        studentEntity = this.studentMapper.toEntity(studentCreationDto1);
         this.studentRepository.addStudent(studentEntity);
+        logDto.setResponseMessage("OK: Student Created Successfully");
+        logDto.setStatusCode(200);
+        messageProducer.sendMessageToTopic(logDto);
+        System.out.println(logDto);
+      }
+      catch (ValidationException ex){
+        logDto.setResponseMessage("BAD_REQUEST: {'errors':['"+ex.getMessage()+"']}");
+        logDto.setStatusCode(400);
+        messageProducer.sendMessageToTopic(logDto);
+        System.out.println(logDto);
+      }
+      catch (Exception ignored){
+        logDto.setResponseMessage("Internal Server Error");
+        logDto.setStatusCode(500);
+        messageProducer.sendMessageToTopic(logDto);
+        System.out.println(logDto);
+      }
+
+      if(studentEntity != null)
         return this.studentMapper.toDto(studentEntity);
+      return null;
+
     }
+
+
+  private void validateStudentCreationDto(StudentCreationDtoByKafka dto) {
+    Set<ConstraintViolation<StudentCreationDtoByKafka>> violations = validator.validate(dto, KafkaValidationgroup.class);
+    if (!violations.isEmpty()) {
+      StringBuilder sb = new StringBuilder();
+      for (ConstraintViolation<StudentCreationDtoByKafka> violation : violations) {
+        sb.append(violation.getMessage()).append(" ");
+      }
+      throw new ValidationException(sb.toString());
+    }
+  }
+
+
 
     public StudentDto assignSubjectsToStudent(Integer id, List<SubjectDto> subjectDtoList) {
         StudentEntity studentEntity = this.studentRepository.findStudentById(id);

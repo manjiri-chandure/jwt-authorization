@@ -45,11 +45,11 @@ public class StudentController {
 
   }
 
-  @PostMapping()
-  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
-  public StudentDto postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
-    return this.studentService.postStudent(studentCreationDto);
-  }
+//  @PostMapping()
+//  @PreAuthorize("hasRole('ROLE_OFFICE_ADMIN')")
+//  public StudentDto postStudent(@Valid @RequestBody StudentCreationDto studentCreationDto) {
+//    return this.studentService.postStudent(studentCreationDto);
+//  }
 
   @PostMapping("/{id}/subjects")
   @PreAuthorize("hasAnyRole('ROLE_OFFICE_ADMIN', 'ROLE_TEACHER')")
