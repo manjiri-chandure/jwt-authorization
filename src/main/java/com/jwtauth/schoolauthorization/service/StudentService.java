@@ -67,16 +67,9 @@ public class StudentService {
 
     @KafkaListener(topics = "Student", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
-      System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+studentCreationDtoByKafka);
       StudentEntity studentEntity = null;
       LogDto logDto = new LogDto();
-      System.out.println(studentCreationDtoByKafka.getLid());
       logDto.setLid(studentCreationDtoByKafka.getLid());
-      System.out.println("--------------------lid----------------------"+logDto.getLid());
-      logDto.setFullName(studentCreationDtoByKafka.getFullName());
-      logDto.setAge(studentCreationDtoByKafka.getAge());
-      logDto.setGender(studentCreationDtoByKafka.getGender());
-      logDto.setTimeStamp(new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()));
       try {
         validateStudentCreationDto(studentCreationDtoByKafka);
         StudentCreationDto studentCreationDto1 = this.studentMapper.toStudentCreationDtoFromKafkaDto(studentCreationDtoByKafka);
