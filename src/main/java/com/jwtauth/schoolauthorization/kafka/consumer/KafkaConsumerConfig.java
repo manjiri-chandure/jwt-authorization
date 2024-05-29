@@ -54,20 +54,6 @@ public class KafkaConsumerConfig {
       errorHandler.addRetryableExceptions(RuntimeException.class);
       return errorHandler;
     }
-//
-//
-//    @Bean
-//    public DefaultErrorHandler errorHandler() {
-//        BackOff fixedBackOff = new FixedBackOff(interval, maxAttempts);
-//        DefaultErrorHandler errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
-//            // logic to execute when all the retry attemps are exhausted
-//            System.out.println("All retry done");
-//        }, fixedBackOff);
-//        errorHandler.addRetryableExceptions(HttpServerErrorException.class);
-//        errorHandler.addNotRetryableExceptions(ValidateException.class);
-//        return errorHandler;
-//
-//    }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, StudentCreationDtoByKafka> kafkaListenerContainerFactory() {

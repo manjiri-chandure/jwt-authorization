@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.util.backoff.BackOff;
@@ -65,7 +66,8 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
-    @KafkaListener(topics = "Student", groupId = "Student", containerFactory = "kafkaListenerContainerFactory")
+  @RetryableTopic
+  @KafkaListener(topics = "Student", groupId = "Student", containerFactory = "kafkaListenerContainerFactory")
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
       StudentEntity studentEntity = null;
       if(studentCreationDtoByKafka.getFullName().equals("shilpa chandure")){
