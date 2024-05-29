@@ -27,7 +27,7 @@ public class KafkaConsumerConfig {
     public ConsumerFactory<String, StudentCreationDtoByKafka> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "student");
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "Student");
         return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
           new JsonDeserializer<>(StudentCreationDtoByKafka.class, false));
     }
@@ -37,6 +37,23 @@ public class KafkaConsumerConfig {
 //
 //
 //    private Long maxAttempts = 10L;
+    @Value(value = "${kafka.backoff.interval}")
+    private Long interval;
+
+    @Value(value = "${kafka.backoff.max_failure}")
+    private Long maxAttempts;
+
+
+    @Bean
+    public DefaultErrorHandler errorHandler() {
+        BackOff fixedBackOff = new FixedBackOff(interval, maxAttempts);
+        DefaultErrorHandler errorHandler;
+      errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
+          System.out.println("All retry tried");
+      }, fixedBackOff);
+      errorHandler.addRetryableExceptions(RuntimeException.class);
+      return errorHandler;
+    }
 //
 //
 //    @Bean
@@ -56,8 +73,9 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, StudentCreationDtoByKafka> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, StudentCreationDtoByKafka> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setCommonErrorHandler(errorHandler());
 //        factory.setCommonErrorHandler(errorHandler());
-//        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
 
         return factory;
     }

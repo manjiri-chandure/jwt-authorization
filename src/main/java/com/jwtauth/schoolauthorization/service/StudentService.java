@@ -65,9 +65,12 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
-    @KafkaListener(topics = "Student", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "Student", groupId = "Student", containerFactory = "kafkaListenerContainerFactory")
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
       StudentEntity studentEntity = null;
+      if(studentCreationDtoByKafka.getFullName().equals("shilpa chandure")){
+        throw new RuntimeException("Shilpa is not allowed");
+      }
       LogDto logDto = new LogDto();
       logDto.setLid(studentCreationDtoByKafka.getLid());
       try {
