@@ -27,29 +27,28 @@ public class KafkaConsumerConfig {
     public ConsumerFactory<String, StudentCreationDtoByKafka> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "student");
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "Students");
         return new DefaultKafkaConsumerFactory<>(configProps, new StringDeserializer(),
           new JsonDeserializer<>(StudentCreationDtoByKafka.class, false));
     }
 
 
-//    private Long interval = 10000L;
+//    @Value(value = "${kafka.backoff.interval}")
+//    private Long interval;
 //
-//
-//    private Long maxAttempts = 10L;
+//    @Value(value = "${kafka.backoff.max_failure}")
+//    private Long maxAttempts;
 //
 //
 //    @Bean
 //    public DefaultErrorHandler errorHandler() {
 //        BackOff fixedBackOff = new FixedBackOff(interval, maxAttempts);
-//        DefaultErrorHandler errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
-//            // logic to execute when all the retry attemps are exhausted
-//            System.out.println("All retry done");
-//        }, fixedBackOff);
-//        errorHandler.addRetryableExceptions(HttpServerErrorException.class);
-//        errorHandler.addNotRetryableExceptions(ValidateException.class);
-//        return errorHandler;
-//
+//        DefaultErrorHandler errorHandler;
+//      errorHandler = new DefaultErrorHandler((consumerRecord, exception) -> {
+//          System.out.println("All retry tried");
+//      }, fixedBackOff);
+//      errorHandler.addRetryableExceptions(RuntimeException.class);
+//      return errorHandler;
 //    }
 
     @Bean
@@ -57,7 +56,8 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, StudentCreationDtoByKafka> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 //        factory.setCommonErrorHandler(errorHandler());
-//        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
+
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.RECORD);
 
         return factory;
     }

@@ -16,8 +16,11 @@ import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import org.springframework.util.backoff.BackOff;
 import org.springframework.util.backoff.FixedBackOff;
@@ -65,18 +68,21 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
-    @KafkaListener(topics = "Student", groupId = "student", containerFactory = "kafkaListenerContainerFactory")
+
+  @KafkaListener(topics = "Students", groupId = "Students", containerFactory = "kafkaListenerContainerFactory")
+  @KafkaHandler
+  @RetryableTopic(
+    backoff = @Backoff(value = 3000L),
+    attempts = "12",
+    autoCreateTopics = "true",
+    include = RuntimeException.class)
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
-      System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"+studentCreationDtoByKafka);
       StudentEntity studentEntity = null;
+      if(studentCreationDtoByKafka.getFullName().equals("shilpa chandure")){
+        throw new RuntimeException("Shilpa is not allowed");
+      }
       LogDto logDto = new LogDto();
-      System.out.println(studentCreationDtoByKafka.getLid());
       logDto.setLid(studentCreationDtoByKafka.getLid());
-      System.out.println("--------------------lid----------------------"+logDto.getLid());
-      logDto.setFullName(studentCreationDtoByKafka.getFullName());
-      logDto.setAge(studentCreationDtoByKafka.getAge());
-      logDto.setGender(studentCreationDtoByKafka.getGender());
-      logDto.setTimeStamp(new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()));
       try {
         validateStudentCreationDto(studentCreationDtoByKafka);
         StudentCreationDto studentCreationDto1 = this.studentMapper.toStudentCreationDtoFromKafkaDto(studentCreationDtoByKafka);
