@@ -16,9 +16,11 @@ import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import org.springframework.util.backoff.BackOff;
 import org.springframework.util.backoff.FixedBackOff;
@@ -66,8 +68,14 @@ public class StudentService {
         return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
-  @RetryableTopic
-  @KafkaListener(topics = "Student", groupId = "Student", containerFactory = "kafkaListenerContainerFactory")
+
+  @KafkaListener(topics = "Students", groupId = "Students", containerFactory = "kafkaListenerContainerFactory")
+  @KafkaHandler
+  @RetryableTopic(
+    backoff = @Backoff(value = 3000L),
+    attempts = "12",
+    autoCreateTopics = "true",
+    include = RuntimeException.class)
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
       StudentEntity studentEntity = null;
       if(studentCreationDtoByKafka.getFullName().equals("shilpa chandure")){
