@@ -70,12 +70,6 @@ public class StudentService {
 
 
   @KafkaListener(topics = "Students", groupId = "Students", containerFactory = "kafkaListenerContainerFactory")
-  @KafkaHandler
-  @RetryableTopic(
-    backoff = @Backoff(value = 3000L),
-    attempts = "12",
-    autoCreateTopics = "true",
-    include = RuntimeException.class)
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
       StudentEntity studentEntity = null;
       if(studentCreationDtoByKafka.getFullName().equals("shilpa chandure")){
