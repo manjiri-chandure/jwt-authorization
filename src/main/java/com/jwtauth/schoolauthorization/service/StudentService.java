@@ -13,9 +13,12 @@ import com.jwtauth.schoolauthorization.repository.SubjectRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
@@ -49,6 +52,7 @@ public class StudentService {
     @Autowired
     private MessageProducer messageProducer;
 
+    private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
 
 
@@ -69,11 +73,11 @@ public class StudentService {
     }
 
 
-  @KafkaListener(topics = "Students", groupId = "Students", containerFactory = "kafkaListenerContainerFactory")
+  @KafkaListener(topics = "stud", groupId = "Students", containerFactory = "kafkaListenerContainerFactory")
   @KafkaHandler
   @RetryableTopic(
     backoff = @Backoff(value = 3000L),
-    attempts = "12",
+    attempts = "1",
     autoCreateTopics = "true",
     include = RuntimeException.class)
     public StudentDto postStudent(StudentCreationDtoByKafka studentCreationDtoByKafka){
@@ -110,6 +114,13 @@ public class StudentService {
         return this.studentMapper.toDto(studentEntity);
       return null;
 
+    }
+
+
+   // @DltHandler
+  @KafkaListener(topics = "stud-dlt", groupId = "Students")
+  private void dltListener(StudentCreationDtoByKafka student) {
+      logger.info(String.valueOf(student + "----------------------------------"));
     }
 
 
