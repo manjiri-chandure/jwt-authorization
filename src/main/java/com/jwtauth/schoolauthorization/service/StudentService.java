@@ -1,4 +1,5 @@
 package com.jwtauth.schoolauthorization.service;
+import com.jwtauth.schoolauthorization.aws.KMSUtil;
 import com.jwtauth.schoolauthorization.dto.*;
 import com.jwtauth.schoolauthorization.entity.StudentEntity;
 import com.jwtauth.schoolauthorization.entity.SubjectEntity;
@@ -30,10 +31,22 @@ public class StudentService {
     @Autowired
     SubjectMapper subjectMapper;
 
+    @Autowired
+    KMSUtil kmsUtil;
+
 
 
     public List<StudentDtoForList> getAllStudent() {
         List<StudentEntity> studentEntityList = this.studentRepository.findAllStudents();
+        if(studentEntityList != null){
+          for(StudentEntity studentEntity : studentEntityList){
+           // System.out.println("------------------------------------"+ studentEntity.getGender());
+            if(studentEntity.getGender().length() > 7){
+              studentEntity.setGender(kmsUtil.kmsDecrypt(studentEntity.getGender()));
+            }
+          }
+        }
+
         return this.studentMapper.toDtoList(studentEntityList);
     }
 
@@ -45,12 +58,15 @@ public class StudentService {
     if (studentEntity == null) {
             throw new ResourceNotFoundException("student with id " + id + " not found");
     }
-        return this.studentMapper.toDtoForSubject(studentEntity);
+      studentEntity.setGender(kmsUtil.kmsDecrypt(studentEntity.getGender()));
+      return this.studentMapper.toDtoForSubject(studentEntity);
     }
 
     public StudentDto postStudent(StudentCreationDto studentCreationDto) {
         StudentEntity studentEntity = this.studentMapper.toEntity(studentCreationDto);
+        studentEntity.setGender(kmsUtil.kmsEncrypt(studentEntity.getGender()));
         this.studentRepository.addStudent(studentEntity);
+        studentEntity.setGender(kmsUtil.kmsDecrypt(studentEntity.getGender()));
         return this.studentMapper.toDto(studentEntity);
     }
 
