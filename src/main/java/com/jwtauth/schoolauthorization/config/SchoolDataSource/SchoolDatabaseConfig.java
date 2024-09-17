@@ -40,7 +40,7 @@ public class SchoolDatabaseConfig {
         sqlSessionFactoryBean.setDataSource(schoolDataSource);
         sqlSessionFactoryBean.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources("mapper/school/*.xml"));
-        sqlSessionFactoryBean.setTypeAliasesPackage("com.jwtauth.schoolauthorization.Entity");
+        sqlSessionFactoryBean.setTypeAliasesPackage("com.jwtauth.schoolauthorization.entity");
         return sqlSessionFactoryBean.getObject();
     }
 

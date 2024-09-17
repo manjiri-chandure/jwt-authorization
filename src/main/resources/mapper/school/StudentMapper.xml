@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.jwtauth.schoolauthorization.Repository.StudentRepository" >
+<mapper namespace="com.jwtauth.schoolauthorization.repository.StudentRepository" >
 
-    <resultMap id="StudentSubjectResultMap" type="com.jwtauth.schoolauthorization.Entity.StudentEntity" >
+    <resultMap id="StudentSubjectResultMap" type="com.jwtauth.schoolauthorization.entity.StudentEntity" >
         <id column="id" property="id"/>
         <result column="first_name" property="firstName"/>
         <result column="last_name" property="lastName"/>
         <result column="gender" property="gender"/>
         <result column="age" property="age"/>
-        <collection property="subjectEntities" ofType="com.jwtauth.schoolauthorization.Entity.SubjectEntity"
+        <collection property="subjectEntities" ofType="com.jwtauth.schoolauthorization.entity.SubjectEntity"
                     column="id"
                     select="selectSubjectFromStudentId" />
     </resultMap>
@@ -28,19 +28,25 @@
 
     <select id="selectSubjectFromStudentId"
             parameterType="java.lang.Integer"
-            resultMap="com.jwtauth.schoolauthorization.Repository.SubjectRepository.SubjectResultMap"
-            resultType="com.jwtauth.schoolauthorization.Entity.SubjectEntity">
+            resultMap="com.jwtauth.schoolauthorization.repository.SubjectRepository.SubjectResultMap"
+            resultType="com.jwtauth.schoolauthorization.entity.SubjectEntity">
          select subject.id, subject.name from subject where id in
           (select sub_id from stud_sub where stud_id = #{id})
     </select>
 
-   <insert id="addStudent" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.Entity.StudentEntity" keyColumn="id">
+    <select id="findStudentSubjectId"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Integer">
+        select id from stud_sub where stud_id =#{studId} and sub_id =#{subId}
+    </select>
+
+   <insert id="addStudent" keyProperty="id" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.entity.StudentEntity" keyColumn="id">
         insert into student (first_name, last_name, gender, age)
         values (#{firstName},#{lastName},#{gender},#{age})
     </insert>
 
 
-    <insert id="assignSubjectsToStudent" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.Entity.SubjectEntity" keyProperty="id">
+    <insert id="assignSubjectsToStudent" useGeneratedKeys="true" parameterType="com.jwtauth.schoolauthorization.entity.SubjectEntity" keyProperty="id">
         insert into stud_sub(stud_id, sub_id) values
         <foreach collection="subjectEntities" item="subject" separator="," >
             (#{id}, #{subject.id})
