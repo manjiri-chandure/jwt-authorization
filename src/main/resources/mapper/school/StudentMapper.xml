@@ -53,4 +53,11 @@
         </foreach>
     </insert>
 
+    <insert id="assignSubjectToStudent" useGeneratedKeys="true"
+            parameterType="java.lang.Integer" >
+        insert into stud_sub(stud_id, sub_id) values (#{sid}, #{sub_id})
+    </insert>
+
+
+
 </mapper>
